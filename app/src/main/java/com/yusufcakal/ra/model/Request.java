@@ -1,6 +1,7 @@
 package com.yusufcakal.ra.model;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -32,6 +33,7 @@ public class Request {
     private int requestMethod;
 
     public Request(Context context, String url, int requestMethod){
+        Log.d(context.getPackageName(), "URL: "+ url);
         this.url = url;
         this.context = context;
         this.requestMethod = requestMethod;
@@ -43,12 +45,12 @@ public class Request {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(requestMethod, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                callback.onSucces(response);
+                callback.onSuccess(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Log.e("MSG", error.toString());
             }
         });
 
@@ -66,7 +68,7 @@ public class Request {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Log.e("MSG", error.toString());
             }
         }){
             @Override
@@ -82,14 +84,19 @@ public class Request {
     }
 
     public void requestVolleyAuth(final VolleyCallback callback, final String username, final String password){
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("username", username);
+        params.put("password", password);
 
-        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(requestMethod, url, null, new Response.Listener<JSONObject>() {
+        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(requestMethod, url,
+                new JSONObject(params),
+                new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    callback.onSuccesAuth(response);
+                    callback.onSuccessAuth(response);
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.e("MSG", e.getMessage());
                 }
             }
         }, new Response.ErrorListener() {
@@ -97,14 +104,22 @@ public class Request {
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(context, String.valueOf(error), Toast.LENGTH_SHORT).show();
             }
-        }){
+        })
+        {
             @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json");
+                return params;
+            }
+
+            /*@Override
             public byte[] getBody() {
                 HashMap<String, String> params = new HashMap<String, String>();
                 params.put("username", username);
                 params.put("password", password);
                 return new JSONObject(params).toString().getBytes();
-            }
+            }*/
         };
 
         requestQueue.add(jsonObjectRequest);
@@ -122,6 +137,7 @@ public class Request {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(context, String.valueOf(error), Toast.LENGTH_SHORT).show();
+                Log.e("MSG", error.toString());
             }
         });
 
@@ -140,6 +156,7 @@ public class Request {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(context, String.valueOf(error), Toast.LENGTH_SHORT).show();
+                Log.e("MSG", error.toString());
             }
         }){
             @Override
@@ -166,6 +183,7 @@ public class Request {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(context, String.valueOf(error), Toast.LENGTH_SHORT).show();
+                Log.e("MSG", error.toString());
             }
         }){
             @Override

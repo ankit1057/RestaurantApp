@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.yusufcakal.ra.R;
 import com.yusufcakal.ra.adapter.BasketAdapter;
+import com.yusufcakal.ra.constants.AppConstants;
 import com.yusufcakal.ra.interfaces.VolleyCallback;
 import com.yusufcakal.ra.interfaces.VolleyTemp;
 import com.yusufcakal.ra.model.ProductBasket;
@@ -57,8 +59,8 @@ public class BasketFragment extends Fragment implements
     private TextView tvBasketNull;
     private ListView lvBasket;
     private ProgressDialog progressDialog;
-    private String url = "http://fatihsimsek.me:9090/detail/";
-    private String urlTempDesk = "http://fatihsimsek.me:9090/tempdesk";
+    private String url = AppConstants.HOST+"/detail/";
+    private String urlTempDesk = AppConstants.HOST+"/tempdesk";
     private String android_id;
     private List<ProductBasketDetail> productBasketDetails;
     private ProductBasketDetail productBasketDetail;
@@ -79,7 +81,7 @@ public class BasketFragment extends Fragment implements
         requestTemp.requestVolleyTempDesk(this, deskID);
 
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("Sepet Yükleniyor..");
+        progressDialog.setMessage(getString(R.string.loading));
         progressDialog.show();
         progressDialog.hide();
 
@@ -91,13 +93,13 @@ public class BasketFragment extends Fragment implements
         SharedPreferences sharedpreferences = getActivity().getSharedPreferences("userBasket", Context.MODE_PRIVATE);
         userFlag = sharedpreferences.getBoolean("user",false);
         if (userFlag){
-            btnOrder.setText("SİPARİŞ VER");
+            btnOrder.setText(R.string.order);
         }
 
         productBaskets = new ArrayList<>();
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("basket").child(android_id);
-        databaseReference.addValueEventListener(this);
+        //firebaseDatabase = FirebaseDatabase.getInstance();
+        //databaseReference = firebaseDatabase.getReference("basket").child(android_id);
+        //databaseReference.addValueEventListener(this);
 
         return view;
     }
@@ -105,12 +107,13 @@ public class BasketFragment extends Fragment implements
     @Override
     public void getTempId(JSONObject tempId) {
         Toast.makeText(getActivity(), String.valueOf(tempId), Toast.LENGTH_SHORT).show();
+        Log.d("MSG", tempId.toString());
     }
 
     @Override
     public void onClick(View v) {
         if (v.equals(btnOrder) && userFlag){
-            Toast.makeText(getActivity(), "Sipariş Verildi Onay Bekliyor.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Order Pending Approval.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -122,11 +125,10 @@ public class BasketFragment extends Fragment implements
             productBasket.setProductId(snapshot.getValue(ProductBasket.class).getProductId());
             productBaskets.add(productBasket);
         }
-
         try {
             Toast.makeText(getActivity(), productBaskets.size()+"", Toast.LENGTH_SHORT).show();
         }catch (Exception e){
-
+            Log.e("MSG", e.getMessage());
         }
 
     }

@@ -9,13 +9,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.yusufcakal.ra.R;
 import com.yusufcakal.ra.fragment.BasketFragment;
 import com.yusufcakal.ra.fragment.CategoryFragment;
-import com.yusufcakal.ra.fragment.DetailPrıductFragment;
-import com.yusufcakal.ra.fragment.ProductDetailFragment;
+import com.yusufcakal.ra.fragment.DetailProductFragment;
 import com.yusufcakal.ra.interfaces.CategoryCallback;
 import com.yusufcakal.ra.interfaces.ProductDetailBarChange;
 import com.yusufcakal.ra.interfaces.ProductDetailCallback;
@@ -68,7 +66,7 @@ public class UserActivity extends AppCompatActivity implements
     public void onClick(View v) {
         if (v.equals(imCart)){
             startFragment(new BasketFragment());
-            tvActionBar.setText("SEPETİM");
+            tvActionBar.setText(getString(R.string.shoppingCart) );
         }else if (v.equals(imBack)){
             startFragment(new CategoryFragment());
             imBack.setVisibility(View.GONE);
@@ -88,22 +86,22 @@ public class UserActivity extends AppCompatActivity implements
         bundle.putInt("id",id);
         fragment.setArguments(bundle);
         startFragment(fragment);
-        tvActionBar.setText(getApplicationContext().getResources().getString(R.string.product));
+        tvActionBar.setText(getString(R.string.product));
     }
 
+    @Override
+    public void onStartProductDetailFragment(DetailProductFragment productDetailFragment, int id) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("id",id);
+        productDetailFragment.setArguments(bundle);
+        startFragment(productDetailFragment);
+    }
 
-            @Override
-            public void onStartProductDetailFragment(DetailPrıductFragment productDetailFragment, int id) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("id",id);
-                productDetailFragment.setArguments(bundle);
-                startFragment(productDetailFragment);
-            }
+    @Override
+    public void onChangeBar(String title) {
+        tvActionBar.setText(title);
+        tvActionBar.setAllCaps(true);
+        imBack.setVisibility(View.VISIBLE);
+    }
 
-            @Override
-            public void onChangeBar(String title) {
-                tvActionBar.setText(title);
-                tvActionBar.setAllCaps(true);
-                imBack.setVisibility(View.VISIBLE);
-            }
-        }
+}

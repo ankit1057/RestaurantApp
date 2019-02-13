@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.yusufcakal.ra.R;
+import com.yusufcakal.ra.constants.AppConstants;
 import com.yusufcakal.ra.interfaces.CategoryCallback;
 import com.yusufcakal.ra.interfaces.VolleyCallback;
 import com.yusufcakal.ra.model.Product;
@@ -52,7 +54,7 @@ public class ProductDetailFragment extends Fragment implements VolleyCallback,
     private DatabaseReference databaseReference;
     private View view;
     private int productIdExstra;
-    private String url = "http://fatihsimsek.me:9090/detail/";
+    private String url = AppConstants.HOST +"/detail/";
     private List<String> imageList;
     private SliderLayout sliderLayout;
     private TextView tvPrice;
@@ -77,7 +79,7 @@ public class ProductDetailFragment extends Fragment implements VolleyCallback,
         btnAddBasket.setOnClickListener(this);
 
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("Ürün Yükleniyor..");
+        progressDialog.setMessage(getString(R.string.loading_products));
         progressDialog.show();
 
         sliderLayout = (SliderLayout) view.findViewById(R.id.slider);
@@ -96,7 +98,8 @@ public class ProductDetailFragment extends Fragment implements VolleyCallback,
     }
 
     @Override
-    public void onSucces(JSONObject result) {
+    public void onSuccess(JSONObject result) {
+        Log.d("MSG", result.toString());
 
         progressDialog.hide();
 
@@ -112,7 +115,7 @@ public class ProductDetailFragment extends Fragment implements VolleyCallback,
 
             JSONArray imageArray = productObject.getJSONArray("images");
 
-            tvPrice.setText(price+" TL");
+            tvPrice.setText(price+" "+getString(R.string.currency));
 
                 for (int j=0; j<imageArray.length(); j++){
                     JSONObject imageObject = imageArray.getJSONObject(j);
@@ -139,12 +142,12 @@ public class ProductDetailFragment extends Fragment implements VolleyCallback,
 
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("MSG", e.getMessage());
         }
     }
 
     @Override
-    public void onSuccesAuth(JSONObject result) throws JSONException {
+    public void onSuccessAuth(JSONObject result) throws JSONException {
         //TODO : Not Using
     }
 
@@ -165,12 +168,11 @@ public class ProductDetailFragment extends Fragment implements VolleyCallback,
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             if (count == 0){
-                tvPrice.setText(price+ " TL");
+                tvPrice.setText(price+ " "+getString(R.string.currency));
             }else{
                 piece = Integer.parseInt(String.valueOf(s));
-                tvPrice.setText(String.valueOf(price*piece+ " TL"));
+                tvPrice.setText(String.valueOf(price*piece+ " "+getString(R.string.currency)));
             }
 
     }
@@ -182,13 +184,12 @@ public class ProductDetailFragment extends Fragment implements VolleyCallback,
 
     @Override
     public void onClick(View v) {
-
         if (piece==0){
-            Toast.makeText(getActivity(), "Adet Giriniz.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.enter_qty, Toast.LENGTH_SHORT).show();
         }else{
             ProductBasket productBasket = new ProductBasket(productID, piece);
             databaseReference.push().setValue(productBasket);
-            Toast.makeText(getActivity(),"Sepete Eklendi." , Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(),R.string.added_to_cart , Toast.LENGTH_SHORT).show();
         }
 
     }

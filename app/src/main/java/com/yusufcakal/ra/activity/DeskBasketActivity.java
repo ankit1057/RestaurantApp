@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,6 +19,7 @@ import com.orhanobut.dialogplus.DialogPlus;
 import com.orhanobut.dialogplus.OnItemClickListener;
 import com.yusufcakal.ra.R;
 import com.yusufcakal.ra.adapter.DeskOrderAdapter;
+import com.yusufcakal.ra.constants.AppConstants;
 import com.yusufcakal.ra.interfaces.ChangeDeskStatus;
 import com.yusufcakal.ra.interfaces.DeleteCallback;
 import com.yusufcakal.ra.interfaces.DeleteCallback;
@@ -49,9 +51,9 @@ public class DeskBasketActivity extends AppCompatActivity implements
     private ListView lvBasket;
     private DeskOrderAdapter deskOrderAdapter;
     private List<Product> productList;
-    private String url = "http://fatihsimsek.me:9090/baskets/";
-    private String urlChangeStatus = "http://fatihsimsek.me:9090/changestatus";
-    private String urlDeleteBasket = "http://fatihsimsek.me:9090/deletebasket";
+    private String url = AppConstants.HOST+ "/baskets/";
+    private String urlChangeStatus = AppConstants.HOST+ "/changestatus";
+    private String urlDeleteBasket = AppConstants.HOST+ "/deletebasket";
     private String name, image;
     private int piece, basketID;
     private double price;
@@ -86,15 +88,15 @@ public class DeskBasketActivity extends AppCompatActivity implements
 
         if (status == 0){
             btnOrderVerify.setBackgroundColor(getResources().getColor(R.color.status0));
-            btnOrderVerify.setText("SİPARİŞ YOK");
+            btnOrderVerify.setText("NO ORDER");
             btnOrderVerify.setClickable(false);
         }else if (status == 1){
             btnOrderVerify.setBackgroundColor(getResources().getColor(R.color.status1));
-            btnOrderVerify.setText("SİPARİŞİ ONAYLA");
+            btnOrderVerify.setText("ORDER CONFIRM");
             btnOrderVerify.setClickable(true);
         }else{
             btnOrderVerify.setBackgroundColor(getResources().getColor(R.color.status2));
-            btnOrderVerify.setText("SİPARİŞ ONAYLANMIŞ");
+            btnOrderVerify.setText("ORDER APPROVED");
             btnOrderVerify.setClickable(false);
         }
 
@@ -112,7 +114,7 @@ public class DeskBasketActivity extends AppCompatActivity implements
 
     @Override
     public void getDesk(JSONObject result) {
-
+        Log.d("MSG", result.toString());
         try {
             JSONArray desks = result.getJSONArray("baskets");
             for (int i=0; i<desks.length(); i++){
@@ -121,7 +123,7 @@ public class DeskBasketActivity extends AppCompatActivity implements
                 image = desk.getString("image");
                 piece = desk.getInt("piece");
                 price = desk.getDouble("total");
-                basketID = desk.getInt("basketID");
+                basketID = desk.getInt("basketId"); // changed from 'basketID'
 
                 product = new Product(piece, name, image, price, basketID);
                 productList.add(product);
@@ -132,7 +134,7 @@ public class DeskBasketActivity extends AppCompatActivity implements
             lvBasket.setAdapter(deskOrderAdapter);
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("MSG", e.getMessage());
         }
 
     }
@@ -141,8 +143,8 @@ public class DeskBasketActivity extends AppCompatActivity implements
     public void onClick(View v) {
         if (v.equals(btnOrderVerify)){
             SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE);
-            sweetAlertDialog.setTitleText("ONAYLANDI");
-            sweetAlertDialog.setContentText("Sipariş Onaylandı");
+            sweetAlertDialog.setTitleText("APPROVED");
+            sweetAlertDialog.setContentText("Order Confirmed");
             sweetAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                         @Override
                         public void onClick(SweetAlertDialog sweetAlertDialog) {
@@ -164,7 +166,7 @@ public class DeskBasketActivity extends AppCompatActivity implements
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("MSG", e.getMessage());
         }
     }
 
@@ -172,19 +174,20 @@ public class DeskBasketActivity extends AppCompatActivity implements
     public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
         basketID = productList.get(position).getBasketID();
-
         sweetAlertDialog = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
-        sweetAlertDialog.setTitleText("ÜRÜN SİLİNSİN Mİ ?");
-        sweetAlertDialog.setContentText("Ürün siparişten silinsin mi ?");
-        sweetAlertDialog.setConfirmText("Sil");
-        sweetAlertDialog.setCancelText("Kapat");
+        sweetAlertDialog.setTitleText("DELETE PRODUCT?");
+        sweetAlertDialog.setContentText("Remove product from order?");
+        sweetAlertDialog.setConfirmText("Delete");
+        sweetAlertDialog.setCancelText("Close");
         sweetAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
             @Override
             public void onClick(SweetAlertDialog sweetAlertDialog) {
                 try {
+                    Log.d("MSG", "Delete BasketID: " + basketID + ", URL: " + urlDeleteBasket);
                     Request request = new Request(getApplicationContext(), urlDeleteBasket, com.android.volley.Request.Method.POST);
                     request.requestDeleteBasket(DeskBasketActivity.this, productList.get(position).getBasketID());
                 }catch (Exception e){
+                    Log.e("MSG", e.getMessage());
                 }
 
             }
@@ -215,7 +218,7 @@ public class DeskBasketActivity extends AppCompatActivity implements
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("MSG", e.getMessage());
         }
     }
 

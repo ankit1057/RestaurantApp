@@ -19,7 +19,7 @@
         android:layout_centerVertical="true"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:visibility="gone"
-        android:text="ÜRÜN BULUNMAMAKTADIR"
+        android:text="@string/product_not_available"
         />
 
 </RelativeLayout>

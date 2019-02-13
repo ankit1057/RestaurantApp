@@ -1,7 +1,6 @@
 package com.yusufcakal.ra.interfaces;
 
-import com.yusufcakal.ra.fragment.DetailPrıductFragment;
-import com.yusufcakal.ra.fragment.ProductDetailFragment;
+import com.yusufcakal.ra.fragment.DetailProductFragment;
 
 /**
  * Created by Yusuf on 12.05.2017.
@@ -9,6 +8,6 @@ import com.yusufcakal.ra.fragment.ProductDetailFragment;
 
 public interface ProductDetailCallback {
 
-    void onStartProductDetailFragment(DetailPrıductFragment productDetailFragment, int id);
+    void onStartProductDetailFragment(DetailProductFragment productDetailFragment, int id);
 
 }

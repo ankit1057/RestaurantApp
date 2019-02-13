@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.google.android.gms.auth.api.signin.internal.SignInHubActivity;
 import com.yusufcakal.ra.R;
 import com.yusufcakal.ra.adapter.GridAdapterDesk;
+import com.yusufcakal.ra.constants.AppConstants;
 import com.yusufcakal.ra.interfaces.DeskList;
 import com.yusufcakal.ra.interfaces.RefreshDeskStatus;
 import com.yusufcakal.ra.model.Desk;
@@ -41,7 +43,7 @@ public class StaffDeskActivity extends AppCompatActivity implements
     private GridView gridView;
     private GridAdapterDesk gridAdapter;
     private List<Desk> deskListGlobal;
-    private String url = "http://fatihsimsek.me:9090/desklist";
+    private String url = AppConstants.HOST+ "/desklist";
     private Desk deskRef;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ImageButton ibLogout;
@@ -104,20 +106,21 @@ public class StaffDeskActivity extends AppCompatActivity implements
         String status = deskListGlobal.get(position).getStatus();
         if (status.equals("0")){
             new SweetAlertDialog(this)
-                    .setTitleText("Masa Boş")
+                    .setTitleText(getString(R.string.emptyTable))
                     .show();
         }else if (status.equals("1")){
             startActivity(ıntent);
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }else if (status.equals("2")){
             new SweetAlertDialog(this)
-                    .setTitleText("Sipariş zaten onaylandı.")
+                    .setTitleText("Order has already been approved.")
                     .show();
         }
     }
 
     @Override
     public void getDesk(JSONObject result) {
+        Log.d("MSG", result.toString());
 
         try {
             JSONArray deskList = result.getJSONArray("desklist");
@@ -126,7 +129,7 @@ public class StaffDeskActivity extends AppCompatActivity implements
                 JSONObject desk = (JSONObject) deskList.get(i);
 
                 String name = desk.getString("name");
-                String  status = desk.getString("status");
+                String status = desk.getString("status");
                 String tempId = desk.getString("tempId"); // tempId gelicek
 
                 deskRef = new Desk(name, status, tempId);
@@ -139,7 +142,7 @@ public class StaffDeskActivity extends AppCompatActivity implements
             swipeRefreshLayout.setRefreshing(false);
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.d("MSG", e.getMessage());
         }
     }
 

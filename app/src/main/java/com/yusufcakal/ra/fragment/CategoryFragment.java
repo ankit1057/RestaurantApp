@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import com.yusufcakal.ra.R;
 import com.yusufcakal.ra.adapter.GridAdapterCategory;
+import com.yusufcakal.ra.constants.AppConstants;
 import com.yusufcakal.ra.interfaces.CategoryCallback;
 import com.yusufcakal.ra.interfaces.VolleyCallback;
 import com.yusufcakal.ra.model.Category;
@@ -37,7 +39,7 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
     private GridAdapterCategory gridAdapterCategory;
     private List<Category> categoryList;
     private CategoryCallback categoryCallback;
-    private String urlCategory = "http://fatihsimsek.me:9090/category";
+    private String urlCategory = AppConstants.HOST+ "/category";
     private ProgressDialog progressDialog;
     private Category category;
 
@@ -51,7 +53,7 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
         Request request = new Request(getActivity(), urlCategory, com.android.volley.Request.Method.GET);
         request.requestVolley(this);
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("Menü Yükleniyor.");
+        progressDialog.setMessage(getString(R.string.loading_menu));
         progressDialog.show();
 
         gridView = (GridView) view.findViewById(R.id.gvCat);
@@ -78,7 +80,9 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
     }
 
     @Override
-    public void onSucces(JSONObject result) {
+    public void onSuccess(JSONObject result) {
+        Log.d("MSG", result.toString());
+
         JSONArray jsonArray = null;
         try {
             jsonArray = result.getJSONArray("categories");
@@ -94,7 +98,7 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
 
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("MSG", e.getMessage());
         }
 
         gridAdapterCategory = new GridAdapterCategory(getActivity(), categoryList);
@@ -104,7 +108,7 @@ public class CategoryFragment extends Fragment implements AdapterView.OnItemClic
     }
 
     @Override
-    public void onSuccesAuth(JSONObject result) {
+    public void onSuccessAuth(JSONObject result) {
 
     }
 

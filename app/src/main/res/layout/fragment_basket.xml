@@ -11,7 +11,7 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:text="Sepetiniz Boş"
+        android:text="@string/cart_is_empty"
         android:id="@+id/tvBasketNull"
         android:visibility="gone"
         />

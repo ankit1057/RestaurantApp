@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 public interface VolleyCallback {
 
-    void onSucces(JSONObject result);
-    void onSuccesAuth(JSONObject result) throws JSONException;
+    void onSuccess(JSONObject result);
+    void onSuccessAuth(JSONObject result) throws JSONException;
 
 }

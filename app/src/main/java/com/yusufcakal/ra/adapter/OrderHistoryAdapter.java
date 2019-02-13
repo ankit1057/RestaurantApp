@@ -82,7 +82,7 @@ public class OrderHistoryAdapter extends BaseAdapter {
         }
 
         tvDate.setText(date);
-        tvTotalPrice.setText(String.valueOf(totalPrice+ " TL "));
+        tvTotalPrice.setText(String.valueOf(totalPrice+ context.getString(R.string.currency)));
 
         return view;
     }

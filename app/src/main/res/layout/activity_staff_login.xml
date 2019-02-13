@@ -33,7 +33,7 @@
                     android:layout_marginRight="10dp"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                     android:id="@+id/etUsername"
-                    android:hint="Kullanıcı adı"/>
+                    android:hint="@string/user_name"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -55,7 +55,7 @@
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                     android:id="@+id/etPassword"
                     android:inputType="textPassword"
-                    android:hint="Parola"/>
+                    android:hint="@string/password"/>
 
             </android.support.design.widget.TextInputLayout>
 

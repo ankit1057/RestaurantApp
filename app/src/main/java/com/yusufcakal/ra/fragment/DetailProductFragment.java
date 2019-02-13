@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.yusufcakal.ra.R;
+import com.yusufcakal.ra.constants.AppConstants;
 import com.yusufcakal.ra.interfaces.ProductDetailBarChange;
 import com.yusufcakal.ra.interfaces.VolleyCallback;
 import com.yusufcakal.ra.interfaces.VolleyTemp;
@@ -45,18 +47,18 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
  * Created by Yusuf on 13.05.2017.
  */
 
-public class DetailPrıductFragment extends Fragment implements
+public class DetailProductFragment extends Fragment implements
         VolleyCallback,
         BaseSliderView.OnSliderClickListener,
         ViewPagerEx.OnPageChangeListener,
         TextWatcher,
         View.OnClickListener{
 
-    private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference databaseReference;
+//    private FirebaseDatabase firebaseDatabase;
+//    private DatabaseReference databaseReference;
     private View view;
     private int productIdExstra;
-    private String urlDetail = "http://fatihsimsek.me:9090/detail/";
+    private String urlDetail = AppConstants.HOST+"/detail/";
     private List<String> imageList;
     private SliderLayout sliderLayout;
     private TextView tvPrice;
@@ -75,18 +77,19 @@ public class DetailPrıductFragment extends Fragment implements
 
         android_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        FirebaseApp.initializeApp(getActivity());
+        // Initialize FirebaseApp
+/*        FirebaseApp.initializeApp(getActivity());
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("basket").child(android_id);
-
+*/
         btnAddBasket = (FlatButton) view.findViewById(R.id.btnAddBasket);
         btnAddBasket.setOnClickListener(this);
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("Ürün Yükleniyor..");
+        progressDialog.setMessage(getString(R.string.loading_products));
         progressDialog.show();
         progressDialog.hide();
 
-        //OnSuucese kaydet
+        //OnSuccess Save
 
         sliderLayout = (SliderLayout) view.findViewById(R.id.slider);
         tvPrice = (TextView) view.findViewById(R.id.tvPrice);
@@ -112,10 +115,10 @@ public class DetailPrıductFragment extends Fragment implements
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         if (count == 0){
-            tvPrice.setText(price+ " TL");
+            tvPrice.setText(price+ " " + getString(R.string.currency));
         }else{
             piece = Integer.parseInt(String.valueOf(s));
-            tvPrice.setText(String.valueOf(price*piece+ " TL"));
+            tvPrice.setText(String.valueOf(price*piece+ " " + getString(R.string.currency)));
         }
     }
 
@@ -128,15 +131,16 @@ public class DetailPrıductFragment extends Fragment implements
     public void onClick(View v) {
         if (piece==0){
             new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
-                    .setTitleText("ADET")
-                    .setContentText("Lütfen seçmiş olduğunuz ürüne adet bilgisi giriniz.")
+                    .setTitleText(getString(R.string.piece))
+                    .setContentText(getString(R.string.prompt_info))
                     .show();
         }else{
             ProductBasket productBasket = new ProductBasket(productID, piece);
-            databaseReference.push().setValue(productBasket);
+            // Push Basket to Firebase Database
+            //databaseReference.push().setValue(productBasket);
             new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
-                    .setTitleText("EKLENDİ")
-                    .setContentText("Ürün sepete eklendi.")
+                    .setTitleText(getString(R.string.added))
+                    .setContentText(getString(R.string.product_added))
                     .show();
         }
         closeKeyword();
@@ -168,7 +172,9 @@ public class DetailPrıductFragment extends Fragment implements
     }
 
     @Override
-    public void onSucces(JSONObject result) {
+    public void onSuccess(JSONObject result) {
+
+        Log.d("MSG", result.toString());
 
         progressDialog.hide();
 
@@ -192,7 +198,7 @@ public class DetailPrıductFragment extends Fragment implements
 
                 imageArray = productObject.getJSONArray("images");
 
-                tvPrice.setText(price+" TL");
+                tvPrice.setText(price+" "+getString(R.string.currency));
             }
 
             for (int j=0; j<imageArray.length(); j++){
@@ -200,7 +206,7 @@ public class DetailPrıductFragment extends Fragment implements
                 imageList.add(imageObject.getString("image"));
             }
 
-            for (int k=0; k<imageList.size(); k++){
+            for (int k=0; k < imageList.size(); k++){
                 TextSliderView textSliderView = new TextSliderView(getActivity());
                 // initialize a SliderLayout
                 textSliderView
@@ -219,12 +225,12 @@ public class DetailPrıductFragment extends Fragment implements
             sliderLayout.addOnPageChangeListener(this);
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("MSG", e.getMessage());
         }
     }
 
     @Override
-    public void onSuccesAuth(JSONObject result) throws JSONException {
+    public void onSuccessAuth(JSONObject result) throws JSONException {
 
     }
 

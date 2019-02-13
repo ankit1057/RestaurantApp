@@ -78,8 +78,8 @@ public class DeskOrderAdapter extends BaseAdapter {
         }
 
         tvName.setText(product.getName());
-        tvPrice.setText(price + " TL");
-        tvPiece.setText(String.valueOf(piece)+ " ADET");
+        tvPrice.setText(price + context.getString(R.string.currency));
+        tvPiece.setText(String.valueOf(piece)+ " " +context.getString(R.string.piece));
 
         return view;
     }

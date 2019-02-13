@@ -3,6 +3,7 @@ package com.yusufcakal.ra.activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import com.yusufcakal.ra.R;
 import com.yusufcakal.ra.adapter.GridAdapterDesk;
 import com.yusufcakal.ra.adapter.OrderHistoryAdapter;
+import com.yusufcakal.ra.constants.AppConstants;
 import com.yusufcakal.ra.interfaces.VolleyCallback;
 import com.yusufcakal.ra.model.Desk;
 import com.yusufcakal.ra.model.OrderHistory;
@@ -32,7 +34,7 @@ public class DeskOrdersActivity extends AppCompatActivity implements
     private TextView tvActionBar;
     private ListView lvOrderHistory;
     private String orderId;
-    private String url = "http://fatihsimsek.me:9090/deskOrders/";
+    private String url = AppConstants.HOST+ "/deskOrders/";
     private OrderHistoryAdapter orderHistoryAdapter;
     private List<OrderHistory> orderHistoryList;
     private OrderHistory orderHistory;
@@ -57,6 +59,7 @@ public class DeskOrdersActivity extends AppCompatActivity implements
         orderId = getIntent().getStringExtra("orderId");
         url+=orderId;
 
+        Log.d("MSG", "URL: "+url);
         Request request = new Request(this, url, com.android.volley.Request.Method.GET);
         request.requestVolley(this);
 
@@ -72,15 +75,16 @@ public class DeskOrdersActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onSucces(JSONObject result) {
+    public void onSuccess(JSONObject result) {
+        Log.d("MSG", result.toString());
         try {
             JSONArray deskList = result.getJSONArray("deskOrders");
 
             for (int i=0; i<deskList.length(); i++){
                 JSONObject desk = (JSONObject) deskList.get(i);
 
-                int orderId = desk.getInt("orderID");
-                int  status = desk.getInt("status");
+                int orderId = desk.getInt("orderId"); // changed from 'orderID'
+                int status = desk.getInt("status");
                 String date = desk.getString("date"); // tempId gelicek
                 Double totalPrice = desk.getDouble("total"); // tempId gelicek
 
@@ -97,7 +101,7 @@ public class DeskOrdersActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onSuccesAuth(JSONObject result) throws JSONException {
+    public void onSuccessAuth(JSONObject result) throws JSONException {
 
     }
 

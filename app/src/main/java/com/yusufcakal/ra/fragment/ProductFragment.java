@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +14,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.ValueEventListener;
 import com.yusufcakal.ra.R;
-import com.yusufcakal.ra.activity.StaffDeskActivity;
 import com.yusufcakal.ra.adapter.ProductAdapter;
+import com.yusufcakal.ra.constants.AppConstants;
 import com.yusufcakal.ra.interfaces.*;
 import com.yusufcakal.ra.model.Product;
 import com.yusufcakal.ra.model.Request;
@@ -37,7 +37,7 @@ public class ProductFragment extends Fragment implements VolleyCallback, Adapter
     private ListView lvProduct;
     private ProductAdapter productAdapter;
     private List<Product> productList;
-    private String url = "http://fatihsimsek.me:9090/product/";
+    private String url = AppConstants.HOST+"/product/";
     private int id;
     private Product product;
     private ProgressDialog progressDialog;
@@ -60,7 +60,7 @@ public class ProductFragment extends Fragment implements VolleyCallback, Adapter
         request.requestVolley(this);
 
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("Ürünler Yükleniyor..");
+        progressDialog.setMessage(getString(R.string.loading_products));
         progressDialog.show();
 
         tvProductNull = (TextView) view.findViewById(R.id.tvProductNull);
@@ -73,7 +73,8 @@ public class ProductFragment extends Fragment implements VolleyCallback, Adapter
     }
 
     @Override
-    public void onSucces(JSONObject result) {
+    public void onSuccess(JSONObject result) {
+        Log.d("MSG", result.toString());
 
         JSONArray jsonArray = null;
         try {
@@ -100,7 +101,7 @@ public class ProductFragment extends Fragment implements VolleyCallback, Adapter
 
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("MSG", e.getMessage());
         }
 
         productAdapter = new ProductAdapter(getActivity(), productList);
@@ -114,14 +115,14 @@ public class ProductFragment extends Fragment implements VolleyCallback, Adapter
     }
 
     @Override
-    public void onSuccesAuth(JSONObject result) throws JSONException {
+    public void onSuccessAuth(JSONObject result) throws JSONException {
 
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         try {
-            productDetailCallback.onStartProductDetailFragment(new DetailPrıductFragment(), productList.get(position).getProductId());
+            productDetailCallback.onStartProductDetailFragment(new DetailProductFragment(), productList.get(position).getProductId());
         }catch (Exception e){
             Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }

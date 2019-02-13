@@ -14,6 +14,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.cengalabs.flatui.views.FlatButton;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -21,8 +27,16 @@ import com.yusufcakal.ra.Manifest;
 import com.yusufcakal.ra.R;
 import com.yusufcakal.ra.interfaces.VolleyCallback;
 import com.yusufcakal.ra.model.Request;
+import com.yusufcakal.ra.model.VolleyClient;
 //import com.yusufcakal.ra.model.SharedPref;
 
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.android.volley.Request.Method.GET;
+import static com.android.volley.Request.Method.POST;
 import static com.google.android.gms.internal.zzt.TAG;
 
 public class MainActivity extends Activity implements View.OnClickListener{
@@ -44,6 +58,31 @@ public class MainActivity extends Activity implements View.OnClickListener{
         btnOrder.setOnClickListener(this);
         btnStaff.setTypeface(tfRegular);
         btnOrder.setTypeface(tfRegular);
+/*
+        HashMap<String, String> params = new HashMap();
+        params.put("username", "admin");
+        params.put("password", "admin");
+        JSONObject jsonObject = new JSONObject(params);
+        VolleyClient.getInstance(this).addToRequestQueue( new JsonObjectRequest("http://192.168.1.38:8080/login",
+                jsonObject,
+                new Response.Listener<JSONObject>(){
+                    @Override
+                    public void onResponse(JSONObject o) {
+                        Log.d(getPackageName(), o.toString());
+                    }
+                }, new Response.ErrorListener(){
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(getPackageName(), "Error: " +  error.toString());
+            }
+        } ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json");
+                return params;
+            }
+        });*/
 
     }
 

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.provider.SyncStateContract;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.yusufcakal.ra.R;
+import com.yusufcakal.ra.constants.AppConstants;
 import com.yusufcakal.ra.interfaces.VolleyCallback;
 import com.yusufcakal.ra.model.Request;
 import com.yusufcakal.ra.model.VolleyClient;
@@ -37,7 +39,7 @@ public class StaffLoginActivity extends AppCompatActivity implements View.OnClic
     private TextView tvActionBar;
     private EditText etUsername, etPassword;
     private Button btnLogin;
-    private String url = "http://fatihsimsek.me:9090/login";
+    private String url = AppConstants.HOST+"/login";// "http://fatihsimsek.me:9090/login";
     private ProgressDialog progressDialog;
     private boolean loginFlag;
 
@@ -78,15 +80,15 @@ public class StaffLoginActivity extends AppCompatActivity implements View.OnClic
 
         if (v.equals(btnLogin)){
             if (strUsername.equals("")){
-                tilUsername.setError("Kullanıcı adı boş olamaz.");
+                tilUsername.setError("The user name cannot be empty.");
             }else if (strPassword.equals("")){
-                tilPassword.setError("Parola adı boş olamaz.");
+                    tilPassword.setError("The password name cannot be empty.");
             }else{
 
                 Request request = new Request(this, url, com.android.volley.Request.Method.POST);
                 request.requestVolleyAuth(this,  strUsername,  strPassword);
                 progressDialog = new ProgressDialog(this);
-                progressDialog.setMessage("Giriş Yapılıyor..");
+                progressDialog.setMessage("Login ...");
                 progressDialog.show();
 
             }
@@ -95,12 +97,12 @@ public class StaffLoginActivity extends AppCompatActivity implements View.OnClic
 
 
     @Override
-    public void onSucces(JSONObject result) {
+    public void onSuccess(JSONObject result) {
 
     }
 
     @Override
-    public void onSuccesAuth(JSONObject result) throws JSONException {
+    public void onSuccessAuth(JSONObject result) throws JSONException {
 
         progressDialog.hide();
 
@@ -113,7 +115,7 @@ public class StaffLoginActivity extends AppCompatActivity implements View.OnClic
             editor.putBoolean("login", true);
             editor.commit();
         }else{
-            Toast.makeText(this, "Giriş Yapılamadı.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Could not log in.", Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -51,7 +51,7 @@
             android:layout_marginTop="9dp"
             android:layout_marginLeft="8dp"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-            android:text="BOŞ"
+            android:text="@string/empty"
             />
 
         <RelativeLayout
@@ -68,7 +68,7 @@
             android:layout_marginTop="9dp"
             android:layout_marginLeft="8dp"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-            android:text="ONAY BEKLİYOR"
+            android:text="@string/waiting"
             />
 
 
@@ -86,7 +86,7 @@
             android:layout_marginTop="9dp"
             android:layout_marginLeft="8dp"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-            android:text="ONAYLI"
+            android:text="@string/approved"
             />
 
 

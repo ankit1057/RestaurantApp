@@ -1,5 +1,11 @@
 ![screens](https://cloud.githubusercontent.com/assets/16848490/26680729/298d33f8-46e3-11e7-8cec-6cfd3547d348.png)
 
+
+# Updates (01-14-2019)
+1. English Resources translation
+2. Move strings to strings.xml
+3. Add more logging for better debug.
+
 # Restaurant Application
 
 This project is a restaurant application and has been developed to meet the needs of a simple restaurant. The customer who comes to the restaurant can order the QR Code from the mobile phone on the table. 
